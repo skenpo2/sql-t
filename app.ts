@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import usersRouter from './routes/users.js';
+import productsRouter from './routes/products.js';
+import ordersRouter from './routes/orders.js';
 import { pool } from './config/db.js';
 
 dotenv.config();
@@ -13,8 +15,10 @@ app.use(express.json());
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
-// All /users routes live in routes/users.ts
+// Feature routers
 app.use('/users', usersRouter);
+app.use('/products', productsRouter);
+app.use('/orders', ordersRouter);
 
 const PORT = Number(process.env.PORT) || 3000;
 

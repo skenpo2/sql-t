@@ -12,11 +12,6 @@
     "resolveJsonModule": true,
     "sourceMap": true
   },
-  "include": [
-    "app.ts",
-    "config/**/*.ts",
-    "routes/**/*.ts",
-    "controllers/**/*.ts"
-  ],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { query } from '../config/db.js';
+import { getPagination, paginated } from '../utils/pagination.js';
 
 interface User {
   id: number;
@@ -8,12 +9,17 @@ interface User {
   created_at: string;
 }
 
-export async function getUsers(_req: Request, res: Response) {
+export async function getUsers(req: Request, res: Response) {
   try {
+    const p = getPagination(req);
     const { rows } = await query<User>(
-      'SELECT id, name, email, created_at FROM users ORDER BY id',
+      'SELECT id, name, email, created_at FROM users ORDER BY id LIMIT $1 OFFSET $2',
+      [p.limit, p.offset],
     );
-    res.json(rows);
+    const {
+      rows: [{ count }],
+    } = await query<{ count: number }>('SELECT COUNT(*)::int AS count FROM users');
+    res.json(paginated(rows, count, p));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch users' });
